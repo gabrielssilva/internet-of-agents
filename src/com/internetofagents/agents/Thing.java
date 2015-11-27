@@ -3,6 +3,7 @@ package com.internetofagents.agents;
 import java.util.Hashtable;
 
 import com.internetofagents.behaviors.Ability;
+import com.internetofagents.behaviors.Mode;
 import com.internetofagents.behaviors.ServiceType;
 
 import jade.core.Agent;
@@ -18,7 +19,7 @@ public class Thing extends Agent {
 
 	private static final long serialVersionUID = 6716848269178218937L;
 	private Hashtable<ServiceType, Ability > abilities;
-	private String mode;
+	private Mode mode;
 	
 	@Override
 	protected void setup() {
@@ -33,7 +34,6 @@ public class Thing extends Agent {
             DFService.register( this, dfd );
 
             // Default thing behaviors
-    		
     		this.addBehaviour(new OfferServiceBehavior());
     		this.addBehaviour(new PerformActionBehavior());
     		this.addBehaviour(new AnnounceMode());
@@ -93,6 +93,9 @@ public class Thing extends Agent {
 				ACLMessage reply = msg.createReply();
 
 				if (performAction(serviceType)) {
+					// set content to describe action
+					// reply.setContent(...)
+					// performAction(...)
 					reply.setPerformative(ACLMessage.INFORM);
 				} else {
 					reply.setPerformative(ACLMessage.FAILURE);
@@ -147,13 +150,12 @@ public class Thing extends Agent {
 		return ability.perform();
 	}
 
-
-	public String getMode() {
+	public Mode getMode() {
 		return mode;
 	}
 
-
-	public void setMode(String mode) {
+	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
+	
 }

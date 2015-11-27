@@ -2,6 +2,7 @@ package com.internetofagents.example;
 
 import com.internetofagents.agents.Thing;
 import com.internetofagents.behaviors.Ability;
+import com.internetofagents.behaviors.Mode;
 
 public class TV extends Thing {
 
@@ -13,7 +14,7 @@ public class TV extends Thing {
 		
 		//registerAbility(null, new TurnOff());
 		
-		this.setMode("ROMANTIC");
+		this.setMode(Mode.ROMANTIC);
 	}
 	
 	private class TurnOff extends Ability{
