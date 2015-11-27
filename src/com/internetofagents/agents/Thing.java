@@ -18,6 +18,7 @@ public class Thing extends Agent {
 
 	private static final long serialVersionUID = 6716848269178218937L;
 	private Hashtable<ServiceType, Ability > abilities;
+	private String mode;
 	
 	@Override
 	protected void setup() {
@@ -35,6 +36,7 @@ public class Thing extends Agent {
     		
     		this.addBehaviour(new OfferServiceBehavior());
     		this.addBehaviour(new PerformActionBehavior());
+    		this.addBehaviour(new AnnounceMode());
         }
         catch (Exception e) {
             System.out.println( "OMG! An Exception: " + e );
@@ -103,6 +105,17 @@ public class Thing extends Agent {
 			}
 		}
 	}
+	
+	private class AnnounceMode extends CyclicBehaviour {
+
+		private static final long serialVersionUID = 5897938057182082473L;
+
+		@Override
+		public void action() {
+			//Broadcast Mode
+		}
+		
+	}
 
 	
 	public void registerAbility(ServiceType serviceType, Ability ability) {
@@ -133,5 +146,14 @@ public class Thing extends Agent {
 		Ability ability = this.abilities.get(serviceType);
 		return ability.perform();
 	}
-	
+
+
+	public String getMode() {
+		return mode;
+	}
+
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 }
