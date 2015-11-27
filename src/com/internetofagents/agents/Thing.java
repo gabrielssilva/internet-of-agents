@@ -28,7 +28,7 @@ public class Thing extends Agent {
 		try{
 			System.out.println( getLocalName() + " setting up");
 
-            // create the agent descrption of itself
+            // create the agent description of itself
             DFAgentDescription dfd = new DFAgentDescription();
             dfd.setName( getAID() );
             DFService.register( this, dfd );
