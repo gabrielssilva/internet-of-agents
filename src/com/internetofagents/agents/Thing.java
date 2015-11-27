@@ -3,10 +3,13 @@ package com.internetofagents.agents;
 import java.util.Hashtable;
 
 import com.internetofagents.behaviors.Ability;
+import com.internetofagents.behaviors.GenericCyclicBehaviour;
 import com.internetofagents.behaviors.Mode;
 import com.internetofagents.behaviors.ServiceType;
 
+import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -20,9 +23,11 @@ public class Thing extends Agent {
 	private static final long serialVersionUID = 6716848269178218937L;
 	private Hashtable<ServiceType, Ability > abilities;
 	private Mode mode;
+	private String place;
 	
 	@Override
 	protected void setup() {
+		this.place = Place.HOUSE;
 		this.abilities = new Hashtable<ServiceType, Ability >();
 		
 		try{
@@ -36,6 +41,7 @@ public class Thing extends Agent {
             // Default thing behaviors
     		this.addBehaviour(new OfferServiceBehavior());
     		this.addBehaviour(new PerformActionBehavior());
+    		this.addBehaviour(new RegisterOnKeeperBehaviour());
     		this.addBehaviour(new AnnounceMode());
         }
         catch (Exception e) {
@@ -118,6 +124,48 @@ public class Thing extends Agent {
 			//Broadcast Mode
 		}
 		
+	}
+	
+	private class RegisterOnKeeperBehaviour extends Behaviour {
+
+		private static final long serialVersionUID = -2575325491744325392L;
+		private AID keepers[];
+				
+		@Override
+		public void action() {
+			System.out.println("Searching for keepers");
+			DFAgentDescription template = new DFAgentDescription();
+			ServiceDescription sd = new ServiceDescription();
+			sd.setType("keeper@" + place);
+			template.addServices(sd);
+			
+			try {
+				DFAgentDescription[] result = DFService.search(myAgent, template); 
+				this.keepers = new AID[result.length];
+				
+				System.out.println("Found keeper, trying to register: " + result.toString());
+				System.out.println("Found keeper, trying to register: " + result.length);
+				System.out.println("Found keeper, trying to register: " + result[0]);
+				
+				if(result.length > 0){
+					System.out.println("Found keeper, trying to register: " + result[0].getName());
+					ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+					msg.addReceiver(result[0].getName());
+					this.myAgent.send(msg);
+				} else {
+					block();
+				}
+			}
+			catch (FIPAException fe) {
+				fe.printStackTrace();
+			}
+		}
+		
+		@Override
+		public boolean done() {
+			return this.keepers.length > 0;
+			//return false;
+		}
 	}
 
 	

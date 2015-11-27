@@ -1,5 +1,6 @@
 package com.internetofagents.agents;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.internetofagents.behaviors.GenericCyclicBehaviour;
@@ -9,6 +10,7 @@ import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 public class Keeper extends Agent {
@@ -20,16 +22,23 @@ public class Keeper extends Agent {
 	
 	@Override
 	protected void setup() {
+		this.things = new ArrayList<AID>();
 		this.place = Place.HOUSE;
 		
+		DFAgentDescription dfd = new DFAgentDescription();
+        dfd.setName(this.getAID());
+		
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("keeper@" + this.place);
+		sd.setName("Kepper");
+		
+		dfd.addServices(sd);
+		
+		this.addBehaviour(new WatchForActionBehavior());
+        this.addBehaviour(new WatchForThingsBehavior());
+		
         try {
-        	// Describe itself
-            DFAgentDescription dfd = new DFAgentDescription();
-            dfd.setName(this.getAID());
-			DFService.register(this, dfd);
-			
-			this.addBehaviour(new WatchForActionBehavior());
-	        this.addBehaviour(new WatchForThingsBehavior());
+    		DFService.register(this, dfd);
 		} catch (FIPAException e) {
 			System.out.println("Error registering agent: "+this.getAID());
 			e.printStackTrace();
@@ -53,6 +62,11 @@ public class Keeper extends Agent {
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public int getMessageType() {
+			return ACLMessage.INFORM;
+		}
 	}
 	
 	private class WatchForThingsBehavior extends GenericCyclicBehaviour {
@@ -61,11 +75,13 @@ public class Keeper extends Agent {
 
 		@Override
 		public void onMessageReceived(ACLMessage msg) {
+			System.out.println("Agent "+msg.getSender()+" trying to register");
 			things.add(msg.getSender());
 			
 			ACLMessage reply = msg.createReply();
 			reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 			this.myAgent.send(reply);
+			System.out.println("Success, sending response");
 		}
 
 		@Override
@@ -75,7 +91,7 @@ public class Keeper extends Agent {
 		
 		@Override
 		public int getMessageType() {
-			return ACLMessage.PROPOSE;
+			return ACLMessage.REQUEST;
 		}
 		
 	}

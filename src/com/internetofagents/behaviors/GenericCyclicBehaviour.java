@@ -20,10 +20,7 @@ public abstract class GenericCyclicBehaviour extends CyclicBehaviour {
 		}
 	}
 
-	public int getMessageType() {
-		return ACLMessage.INFORM;
-	}
-	
+	public abstract int getMessageType();
 	public abstract void onMessageReceived(ACLMessage msg);
 	public abstract void onMessageMissing(ACLMessage msg);
 }
