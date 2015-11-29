@@ -32,7 +32,7 @@ public class Person extends Agent {
             e.printStackTrace();
         }
 	}
-	
+
 	private class Speak extends CyclicBehaviour{
 
 		private static final long serialVersionUID = -5788792990071056764L;
@@ -57,7 +57,7 @@ public class Person extends Agent {
 				
 				this.myAgent.send(msg);
 
-				System.out.println(getLocalName() + " says: " + msg.getContent());
+				//System.out.println(getLocalName() + " says: " + msg.getContent());
 	        }
 	        catch (Exception e) {
 	        	System.out.println("No agents found =(");
@@ -76,7 +76,7 @@ public class Person extends Agent {
 			ACLMessage msg = this.myAgent.receive(template);
 			
 			if (msg != null) {
-				System.out.println(getLocalName() + " heard: " + msg.getContent());
+				//System.out.println(getLocalName() + " heard: " + msg.getContent());
 			} else {
 				// Keep waiting
 				block();
