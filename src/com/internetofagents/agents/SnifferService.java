@@ -33,8 +33,12 @@ public class SnifferService extends BaseService {
 	
 	@Override
 	public Filter getCommandFilter(boolean direction) {
-		System.out.println("Adding filters...");
-		return new InterceptorFilter();
+		if (direction == Filter.OUTGOING) {
+			System.out.println("Adding filters...");
+			return new InterceptorFilter();
+		} else {
+			return null;
+		}
 	}
 	
 	private class InterceptorFilter extends Filter {
@@ -44,13 +48,17 @@ public class SnifferService extends BaseService {
 				ACLMessage msg = ((GenericMessage) command.getParam(1)).getACLMessage();
 				AID receiver = (AID) command.getParam(2);
 				
-				if(agentsToWatch.contains(sender) && agentsToWatch.contains(receiver))
+				if((sender.getLocalName().equals("A") && receiver.getLocalName().equals("B"))
+			       || (sender.getLocalName().equals("B") && receiver.getLocalName().equals("A"))
+			       || (sender.getLocalName().equals("A") && receiver.getLocalName().equals("A")))
 				{
 					System.out.println("Messagem intercepted: - - - - - - - - - - - - - - - -");
 					System.out.println("From: "+sender.getName());
 					System.out.println("To: "+receiver.getName());
 					System.out.println("Content: "+msg.getContent());
 					System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - -");
+					
+					msg.setContent("HA HA! It came from: "+sender.getLocalName());
 				}
 			}
 			

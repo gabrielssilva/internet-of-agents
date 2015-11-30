@@ -3,6 +3,7 @@ package com.internetofagents.agents;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -37,7 +38,7 @@ public class Person extends Agent {
         }
 	}
 
-	private class Speak extends CyclicBehaviour{
+	private class Speak extends OneShotBehaviour {
 
 		private static final long serialVersionUID = -5788792990071056764L;
 
@@ -57,8 +58,9 @@ public class Person extends Agent {
 				agents = DFService.search(myAgent, template); 
 				
 	            for (DFAgentDescription dfAgentDescription : agents) {
-	            	
+	       
 	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID()))
+	            		System.out.println(getLocalName()+" Sending to: "+dfAgentDescription.getName());
 	            		msg.addReceiver(dfAgentDescription.getName());
 				}
 	            
@@ -74,7 +76,7 @@ public class Person extends Agent {
 		}
 	}
 	
-	private class Listen extends CyclicBehaviour{
+	private class Listen extends CyclicBehaviour {
 
 		private static final long serialVersionUID = 5641892905754916496L;
 
@@ -84,7 +86,7 @@ public class Person extends Agent {
 			ACLMessage msg = this.myAgent.receive(template);
 			
 			if (msg != null) {
-				//System.out.println(getLocalName() + " heard: " + msg.getContent());
+				System.out.println(getLocalName() + " heard: " + msg.getContent());
 			} else {
 				// Keep waiting
 				block();
