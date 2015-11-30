@@ -15,7 +15,7 @@ public class Person extends Agent {
 
 	@Override
 	protected void setup() {
-		System.out.println( getLocalName() + " setting up");
+		System.out.println( getLocalName() + " setting up...");
 
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName( getAID() );
@@ -47,6 +47,7 @@ public class Person extends Agent {
 			msg.setContent("My secret is, that I Love cats!");
 			
 			DFAgentDescription [] agents = null;
+
 	        
 	        try {
 	        	DFAgentDescription template = new DFAgentDescription();
@@ -57,20 +58,17 @@ public class Person extends Agent {
 				agents = DFService.search(myAgent, template); 
 				
 	            for (DFAgentDescription dfAgentDescription : agents) {
-	       
 	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID())) {
-	            		System.out.println(getLocalName()+" Sending to: "+dfAgentDescription.getName().getLocalName());
+	        			System.out.println(getLocalName() + " says to " + dfAgentDescription.getName().getLocalName() + ": " + msg.getContent());
 	            		msg.addReceiver(dfAgentDescription.getName());
 	            	}
 				}
-	            
-				
+	            	
 				this.myAgent.send(msg);
 
-				//System.out.println(getLocalName() + " says: " + msg.getContent());
 	        }
 	        catch (Exception e) {
-	        	System.out.println("No agents found =(");
+				System.out.println("Speak::action - No agents found =( :" + e.getMessage());
 	        }
 
 		}
@@ -86,7 +84,7 @@ public class Person extends Agent {
 			ACLMessage msg = this.myAgent.receive(template);
 			
 			if (msg != null) {
-				System.out.println(getLocalName() +" heard: "+ msg.getContent() +" from "+ msg.getSender().getLocalName());
+				System.out.println(getLocalName() +" heard from " + msg.getSender().getLocalName() + ": "+ msg.getContent());
 			} else {
 				// Keep waiting
 				block();

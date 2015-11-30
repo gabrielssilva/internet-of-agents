@@ -51,16 +51,23 @@ public class SnifferService extends BaseService {
 				AID receiver = (AID) command.getParam(2);
 				
 				if(manInTheMiddle!=null && agentsToWatch.contains(sender) && agentsToWatch.contains(receiver)){
-					System.out.println("Messagem intercepted: - - - - - - - - - - - - - - - -");
-					System.out.println("From: "+sender.getName());
-					System.out.println("To: "+receiver.getName());
-					System.out.println("Content: "+msg.getContent());
-					System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - -");
+					System.out.println("\n- - - - - - - - Messagem intercepted - - - - - - - - ");
+					System.out.println("Original Message:");
+					System.out.println("\tFrom: " + sender.getLocalName());
+					System.out.println("\tTo: " + receiver.getLocalName());
+					System.out.println("\tContent: " + msg.getContent());
 					
-					msg.clearAllReceiver();
-					msg.addReceiver(manInTheMiddle);
-					msg.addReplyTo(sender);
-					msg.setContent("Intercepted!");
+					//msg.clearAllReceiver();
+					//msg.addReceiver(manInTheMiddle);
+					//msg.addReplyTo(sender);
+					msg.setContent("My secret is, that I HATE HATE HATE cats!");
+
+					System.out.println("Tempered Message:");
+					System.out.println("\tFrom: " + sender.getLocalName());
+					System.out.println("\tTo: " + receiver.getLocalName());
+					System.out.println("\tContent: " + msg.getContent());
+
+					System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
 				}
 			}
 			

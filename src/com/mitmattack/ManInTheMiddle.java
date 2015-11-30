@@ -22,13 +22,13 @@ public class ManInTheMiddle extends Agent {
 	
 	@Override
 	protected void setup() {
-		System.out.println( getLocalName() + " setting up");
+		System.out.println( getLocalName() + " setting up...");
 	
 	    DFAgentDescription dfd = new DFAgentDescription();
 	    dfd.setName( getAID() );
 		
 		this.addBehaviour(new WatchAMSSubscription());
-		this.addBehaviour(new Listen());
+		//this.addBehaviour(new Listen());
 		SnifferService.manInTheMiddle = this.getAID();
 	    
 		try{
@@ -48,8 +48,7 @@ public class ManInTheMiddle extends Agent {
 		try {
 			agents = DFService.search(this, template);
 		} catch (FIPAException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("ManInTheMiddle::setup - No agents found =( :" + e.getMessage());
 		} 
 		
         for (DFAgentDescription dfAgentDescription : agents) {
@@ -83,12 +82,12 @@ public class ManInTheMiddle extends Agent {
 				}
 				
 				
-				System.out.println("A new agent is alive!");
+				System.out.println("Agent " + agent.getAgent().getLocalName() + " is alive!");
 			}
 		}
 	}
 	
-	
+/*	
 	private class Listen extends CyclicBehaviour {
 
 		private static final long serialVersionUID = 5641892905754916496L;
@@ -113,4 +112,5 @@ public class ManInTheMiddle extends Agent {
 			}	
 		}
 	}
+*/
 }
