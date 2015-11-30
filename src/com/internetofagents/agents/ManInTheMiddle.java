@@ -1,16 +1,20 @@
 package com.internetofagents.agents;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import jade.core.Agent;
+import jade.domain.AMSService;
 import jade.domain.DFService;
 import jade.domain.DFSubscriber;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.AMSAgentDescription;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.introspection.AMSSubscriber;
+import jade.domain.introspection.BornAgent;
 import jade.domain.introspection.Event;
 import jade.domain.introspection.IntrospectionVocabulary;
-import jade.util.leap.Iterator;
 
 public class ManInTheMiddle extends Agent {
 
@@ -50,7 +54,6 @@ public class ManInTheMiddle extends Agent {
 
 		@Override
 		public void onRegister(DFAgentDescription arg0) {
-			
 		}	
 	}
 
@@ -70,24 +73,16 @@ public class ManInTheMiddle extends Agent {
 
 			@Override
 			public void handle(Event arg0) {
+				BornAgent agent = (BornAgent) arg0;
+
+			
+				if(agent.getClassName().contains("Person")){
+					SnifferService.agentsToWatch.add(agent.getAgent());
+					System.out.println("Adding agent " + arg0.getName() + " to the sniffer service.");
+				}
+				
+				
 				System.out.println("A new agent is alive!");
-				
-				/*
-				
-				
-				System.out.println(arg0.getName());
-				Iterator serviceList = arg0.getAllServices();
-				
-				while(serviceList.hasNext()){
-					ServiceDescription sd = (ServiceDescription) serviceList;
-					if(sd.getType().equals("person-communication")){
-						SnifferService.agentsToWatch.add(arg0.getName());
-						
-						System.out.println("Adding agent " + arg0.getName() + " to the sniffer service.");
-					}
-					
-					serviceList.next();
-				}*/
 			}
 		}
 	}
