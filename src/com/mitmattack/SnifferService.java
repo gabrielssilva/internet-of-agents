@@ -36,7 +36,7 @@ public class SnifferService extends BaseService {
 	@Override
 	public Filter getCommandFilter(boolean direction) {
 		if (direction == Filter.OUTGOING) {
-			System.out.println("Adding filters...");
+			System.out.println("Adding Outgoing filters...");
 			return new InterceptorFilter();
 		} else {
 			return null;

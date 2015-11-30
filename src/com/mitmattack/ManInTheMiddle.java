@@ -6,7 +6,9 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
+import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.introspection.AMSSubscriber;
 import jade.domain.introspection.BornAgent;
 import jade.domain.introspection.Event;
@@ -36,6 +38,24 @@ public class ManInTheMiddle extends Agent {
 	        System.out.println( "OMG! An Exception: " + e );
 	        e.printStackTrace();
 	    }
+		
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("person-communication");
+		template.addServices(sd);
+		
+		DFAgentDescription[] agents = null;
+		try {
+			agents = DFService.search(this, template);
+		} catch (FIPAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+        for (DFAgentDescription dfAgentDescription : agents) {
+        	SnifferService.agentsToWatch.add(dfAgentDescription.getName());
+        	System.out.println("Adding agent " + dfAgentDescription.getName().getLocalName() + " to the sniffer service.");
+		}
 	}
 
 	
@@ -59,7 +79,7 @@ public class ManInTheMiddle extends Agent {
 			
 				if(agent.getClassName().contains("Person")){
 					SnifferService.agentsToWatch.add(agent.getAgent());
-					System.out.println("Adding agent " + arg0.getName() + " to the sniffer service.");
+					System.out.println("Adding agent " + agent.getAgent().getLocalName() + " to the sniffer service.");
 				}
 				
 				

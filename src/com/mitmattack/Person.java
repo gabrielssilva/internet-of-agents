@@ -37,7 +37,7 @@ public class Person extends Agent {
         }
 	}
 
-	private class Speak extends OneShotBehaviour {
+	private class Speak extends CyclicBehaviour {
 
 		private static final long serialVersionUID = -5788792990071056764L;
 
@@ -59,7 +59,7 @@ public class Person extends Agent {
 	            for (DFAgentDescription dfAgentDescription : agents) {
 	       
 	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID())) {
-	            		System.out.println(getLocalName()+" Sending to: "+dfAgentDescription.getName());
+	            		System.out.println(getLocalName()+" Sending to: "+dfAgentDescription.getName().getLocalName());
 	            		msg.addReceiver(dfAgentDescription.getName());
 	            	}
 				}
@@ -86,7 +86,7 @@ public class Person extends Agent {
 			ACLMessage msg = this.myAgent.receive(template);
 			
 			if (msg != null) {
-				System.out.println(getLocalName()+" heard: "+msg.getContent()+" from "+msg.getSender().getLocalName());
+				System.out.println(getLocalName() +" heard: "+ msg.getContent() +" from "+ msg.getSender().getLocalName());
 			} else {
 				// Keep waiting
 				block();
