@@ -1,6 +1,5 @@
 package com.mitmattack;
 
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -59,9 +58,10 @@ public class Person extends Agent {
 				
 	            for (DFAgentDescription dfAgentDescription : agents) {
 	       
-	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID()))
+	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID())) {
 	            		System.out.println(getLocalName()+" Sending to: "+dfAgentDescription.getName());
 	            		msg.addReceiver(dfAgentDescription.getName());
+	            	}
 				}
 	            
 				
@@ -86,12 +86,11 @@ public class Person extends Agent {
 			ACLMessage msg = this.myAgent.receive(template);
 			
 			if (msg != null) {
-				System.out.println(getLocalName() + " heard: " + msg.getContent());
+				System.out.println(getLocalName()+" heard: "+msg.getContent()+" from "+msg.getSender().getLocalName());
 			} else {
 				// Keep waiting
 				block();
 			}	
 		}
-		
 	}
 }

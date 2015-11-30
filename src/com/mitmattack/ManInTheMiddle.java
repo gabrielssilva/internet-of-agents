@@ -1,20 +1,18 @@
 package com.mitmattack;
 
-import java.util.Iterator;
 import java.util.Map;
 
+import jade.core.AID;
 import jade.core.Agent;
-import jade.domain.AMSService;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
-import jade.domain.DFSubscriber;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.AMSAgentDescription;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.introspection.AMSSubscriber;
 import jade.domain.introspection.BornAgent;
 import jade.domain.introspection.Event;
 import jade.domain.introspection.IntrospectionVocabulary;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 public class ManInTheMiddle extends Agent {
 
@@ -28,7 +26,8 @@ public class ManInTheMiddle extends Agent {
 	    dfd.setName( getAID() );
 		
 		this.addBehaviour(new WatchAMSSubscription());
-		this.addBehaviour(new WatchDFSubscription(this, dfd));
+		this.addBehaviour(new Listen());
+		SnifferService.manInTheMiddle = this.getAID();
 	    
 		try{
 	        DFService.register( this, dfd );
@@ -37,24 +36,6 @@ public class ManInTheMiddle extends Agent {
 	        System.out.println( "OMG! An Exception: " + e );
 	        e.printStackTrace();
 	    }
-	}
-
-	private class WatchDFSubscription extends DFSubscriber{
-
-		private static final long serialVersionUID = -8966888153464815857L;
-
-		public WatchDFSubscription(Agent a, DFAgentDescription template) {
-			super(a, template);
-		}
-
-		@Override
-		public void onDeregister(DFAgentDescription arg0) {
-			
-		}
-
-		@Override
-		public void onRegister(DFAgentDescription arg0) {
-		}	
 	}
 
 	
@@ -86,5 +67,30 @@ public class ManInTheMiddle extends Agent {
 			}
 		}
 	}
+	
+	
+	private class Listen extends CyclicBehaviour {
 
+		private static final long serialVersionUID = 5641892905754916496L;
+
+		@Override
+		public void action() {
+			MessageTemplate template = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			ACLMessage msg = this.myAgent.receive(template);
+			if (msg != null && SnifferService.agentsToWatch.contains(msg.getSender())) {
+				System.out.println("HEY IM HERE");
+				AID receiver = (AID) msg.getAllReplyTo().next();
+				msg.clearAllReplyTo();
+				
+				msg.clearAllReceiver();
+				msg.addReceiver(receiver);
+				
+				msg.setContent("YUCK, cats... Dogs are superior!");
+				myAgent.send(msg);
+			} else {
+				// Keep waiting
+				block(500);
+			}	
+		}
+	}
 }

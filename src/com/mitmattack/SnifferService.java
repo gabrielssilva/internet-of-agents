@@ -15,6 +15,7 @@ import jade.lang.acl.ACLMessage;
 public class SnifferService extends BaseService {
 	
 	public static ArrayList<AID> agentsToWatch = new ArrayList<AID>();
+	public static AID manInTheMiddle = null;
 	
 	// Service name
 	public static final String NAME =
@@ -24,6 +25,7 @@ public class SnifferService extends BaseService {
 	 public void boot(Profile p) throws ServiceException {
 		 super.boot(p);
 		 System.out.println("Booting the Sniffer service...");
+		 
 	 }
 
 	@Override
@@ -48,17 +50,17 @@ public class SnifferService extends BaseService {
 				ACLMessage msg = ((GenericMessage) command.getParam(1)).getACLMessage();
 				AID receiver = (AID) command.getParam(2);
 				
-				if((sender.getLocalName().equals("A") && receiver.getLocalName().equals("B"))
-			       || (sender.getLocalName().equals("B") && receiver.getLocalName().equals("A"))
-			       || (sender.getLocalName().equals("A") && receiver.getLocalName().equals("A")))
-				{
+				if(manInTheMiddle!=null && agentsToWatch.contains(sender) && agentsToWatch.contains(receiver)){
 					System.out.println("Messagem intercepted: - - - - - - - - - - - - - - - -");
 					System.out.println("From: "+sender.getName());
 					System.out.println("To: "+receiver.getName());
 					System.out.println("Content: "+msg.getContent());
 					System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - -");
 					
-					msg.setContent("HA HA! It came from: "+sender.getLocalName());
+					msg.clearAllReceiver();
+					msg.addReceiver(manInTheMiddle);
+					msg.addReplyTo(sender);
+					msg.setContent("Intercepted!");
 				}
 			}
 			
