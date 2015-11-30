@@ -1,5 +1,6 @@
 package com.internetofagents.agents;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
@@ -56,6 +57,7 @@ public class Person extends Agent {
 				agents = DFService.search(myAgent, template); 
 				
 	            for (DFAgentDescription dfAgentDescription : agents) {
+	            	
 	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID()))
 	            		msg.addReceiver(dfAgentDescription.getName());
 				}
