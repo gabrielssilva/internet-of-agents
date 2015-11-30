@@ -1,4 +1,4 @@
-package com.internetofagents.agents;
+package com.mitmattack;
 
 import java.util.ArrayList;
 
