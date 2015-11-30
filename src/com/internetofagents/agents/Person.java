@@ -2,11 +2,9 @@ package com.internetofagents.agents;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.AMSService;
 import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.AMSAgentDescription;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
@@ -20,6 +18,11 @@ public class Person extends Agent {
 
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName( getAID() );
+        
+        ServiceDescription sd = new ServiceDescription();
+		sd.setType("person-communication");
+		sd.setName("Person-Communication");
+		dfd.addServices(sd);
 		
 		this.addBehaviour(new Speak());
 		this.addBehaviour(new Listen());
@@ -42,16 +45,19 @@ public class Person extends Agent {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.setContent("My secret is, that I Love cats!");
 			
-			AMSAgentDescription [] agents = null;
+			DFAgentDescription [] agents = null;
 	        
 	        try {
-	            SearchConstraints c = new SearchConstraints();
-	            c.setMaxResults ( new Long(-1) );
-	            agents = AMSService.search( this.myAgent, new AMSAgentDescription (), c );
-	            
-	            for (AMSAgentDescription amsAgentDescription : agents) {
-	            	if(!amsAgentDescription.getName().equals(this.myAgent.getAID()))
-	            		msg.addReceiver(amsAgentDescription.getName());
+	        	DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("person-communication");
+				template.addServices(sd);
+				
+				agents = DFService.search(myAgent, template); 
+				
+	            for (DFAgentDescription dfAgentDescription : agents) {
+	            	if(!dfAgentDescription.getName().equals(this.myAgent.getAID()))
+	            		msg.addReceiver(dfAgentDescription.getName());
 				}
 	            
 				
